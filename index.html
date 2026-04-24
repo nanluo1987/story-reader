@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>故事编辑器</title>
 
 <!-- PWA -->
@@ -51,7 +51,7 @@
   --shadow-lg:0 8px 28px rgba(28,25,23,0.10),0 4px 10px rgba(28,25,23,0.06);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;}
+body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;touch-action:manipulation;overscroll-behavior:none;}
 
 .top-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--border),0 2px 8px rgba(28,25,23,0.04);}
 .top-nav .logo{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--text);margin-right:40px;letter-spacing:-0.01em;flex-shrink:0;}
@@ -130,8 +130,9 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 .tag-selectable.tag-already-added{opacity:0.4;cursor:default;pointer-events:none;text-decoration:line-through;}
 
 .editor-wrapper{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);}
-.editor-toolbar{display:flex;gap:6px;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center;}
-.editor-toolbar .toolbar-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+.editor-toolbar{display:flex;gap:6px;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.editor-toolbar::-webkit-scrollbar{display:none;}
+.editor-toolbar .toolbar-sep{width:1px;height:20px;background:var(--border);margin:0 4px;flex-shrink:0;}
 .editor-content{width:100%;min-height:520px;background:transparent;border:none;color:var(--text);font-size:16px;line-height:1.9;padding:32px 36px;resize:vertical;font-family:'Lora',serif;outline:none;}
 .editor-content::placeholder{color:var(--text-muted);font-style:italic;}
 .read-content{padding:36px;font-family:'Lora',serif;font-size:16px;line-height:1.95;color:var(--text);min-height:520px;white-space:pre-wrap;word-wrap:break-word;}
@@ -193,18 +194,47 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 #import-file-input{display:none;}
 
 @media(max-width:640px){
-  .container{padding:20px 14px;}
+  /* 布局 */
+  .container{padding:16px 14px;}
   .card-grid{grid-template-columns:1fr;}
-  .editor-toolbar{gap:4px;padding:10px 14px;}
-  .btn{padding:8px 13px;font-size:12px;}
-  .top-nav .logo{font-size:16px;margin-right:20px;}
-  .nav-tab{padding:7px 12px;font-size:13px;}
-  .read-content,.editor-content{padding:20px;}
-  .chapter-title-bar{padding:20px;}
-  .chapter-nav{padding:16px 20px;}
-  .chapter-nav-title{max-width:100px;}
-  .synopsis-editor{padding:20px;}
-  .tag-editor{padding:20px;}
+
+  /* 防止 iOS 输入框聚焦放大（< 16px 会触发自动缩放）*/
+  input,textarea,select{font-size:16px !important;}
+
+  /* 顶部导航 */
+  .top-nav{padding:0 16px;}
+  .top-nav .logo{font-size:15px;margin-right:14px;}
+  .nav-tab{padding:6px 10px;font-size:12px;gap:5px;}
+
+  /* 页面标题行：按钮折行时不撑出屏幕 */
+  .page-header{flex-wrap:wrap;gap:10px;}
+  .page-header h2{font-size:20px;}
+  .page-header > div{display:flex;flex-wrap:wrap;gap:6px;}
+
+  /* 通用按钮缩小 */
+  .btn{padding:7px 11px;font-size:12px;gap:4px;white-space:nowrap;flex-shrink:0;}
+  .btn-sm{padding:5px 10px;font-size:11px;}
+
+  /* 编辑器工具栏：nowrap + 横向滚动，按钮保持一行 */
+  .editor-toolbar{gap:5px;padding:10px 12px;}
+  .editor-toolbar .btn{padding:7px 11px;font-size:12px;}
+
+  /* 内容区域 */
+  .read-content,.editor-content{padding:18px 16px;font-size:15px;}
+  .chapter-title-bar{padding:16px;}
+  .chapter-title-bar h2{font-size:18px;padding-bottom:12px;}
+
+  /* 章节导航 */
+  .chapter-nav{padding:14px 16px;}
+  .chapter-nav-btn{padding:8px 12px;font-size:12px;gap:6px;}
+  .chapter-nav-title{max-width:90px;}
+
+  /* 梗概 / 标签编辑区 */
+  .synopsis-editor{padding:16px;}
+  .tag-editor{padding:16px;}
+
+  /* 面包屑 */
+  .breadcrumb{padding:9px 16px;font-size:12px;}
 }
 
 .icon-sm{width:14px;height:14px;}
