@@ -16,7 +16,6 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 
-<!-- 字体：preconnect 加速，离线时 SW 提供缓存版本 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -132,9 +131,8 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 .tag-selectable.tag-already-added{opacity:0.4;cursor:default;pointer-events:none;text-decoration:line-through;}
 
 .editor-wrapper{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);}
-.editor-toolbar{display:flex;gap:6px;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.editor-toolbar::-webkit-scrollbar{display:none;}
-.editor-toolbar .toolbar-sep{width:1px;height:20px;background:var(--border);margin:0 4px;flex-shrink:0;}
+.editor-toolbar{display:flex;gap:4px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:nowrap;align-items:center;overflow-x:visible;}
+.editor-toolbar .toolbar-sep{width:1px;height:20px;background:var(--border);margin:0 2px;flex-shrink:0;}
 .editor-content{width:100%;min-height:520px;background:transparent;border:none;color:var(--text);font-size:16px;line-height:1.9;padding:32px 36px;resize:vertical;font-family:'Lora',serif;outline:none;}
 .editor-content::placeholder{color:var(--text-muted);font-style:italic;}
 .read-content{padding:36px;font-family:'Lora',serif;font-size:16px;line-height:1.95;color:var(--text);min-height:520px;white-space:pre-wrap;word-wrap:break-word;}
@@ -200,56 +198,55 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 .font-size-bar button:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-soft);}
 .font-size-bar .fs-value{min-width:32px;text-align:center;font-weight:500;color:var(--text);}
 
+.bottom-exit-bar{display:flex;justify-content:center;align-items:center;padding:20px 36px;border-top:1px solid var(--border);background:var(--surface);}
+
+/*── story title row with rename button ── */
+.story-title-row{display:flex;align-items:center;gap:8px;}
+.story-title-row h2{margin:0;}
+.rename-btn{background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:4px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+.rename-btn:hover{background:var(--accent-soft);color:var(--accent);}
+
 @media(max-width:640px){
-  /* 布局 */
   .container{padding:16px 14px;}
   .card-grid{grid-template-columns:1fr;}
-
-  /* 防止 iOS 输入框聚焦放大（< 16px 会触发自动缩放）*/
   input,textarea,select{font-size:16px !important;}
-
-  /* 顶部导航 */
   .top-nav{padding:0 16px;}
   .top-nav .logo{font-size:15px;margin-right:14px;}
   .nav-tab{padding:6px 10px;font-size:12px;gap:5px;}
 
-  /* 页面标题行：按钮折行时不撑出屏幕 */
   .page-header{flex-wrap:wrap;gap:10px;}
   .page-header h2{font-size:20px;}
   .page-header > div{display:flex;flex-wrap:wrap;gap:6px;}
 
-  /* 通用按钮缩小 */
   .btn{padding:7px 11px;font-size:12px;gap:4px;white-space:nowrap;flex-shrink:0;}
   .btn-sm{padding:5px 10px;font-size:11px;}
 
-  /* 编辑器工具栏：仅显示图标，隐藏文字标签 */
-  .editor-toolbar{gap:4px;padding:10px 10px;}
+  /* toolbar: hide text labels on mobile, icon-only */
+  .editor-toolbar{gap:2px;padding:8px 8px;}
   .editor-toolbar .tb-label{display:none;}
   .editor-toolbar .btn{padding:8px 10px;}
   .editor-toolbar .btn-sm{padding:7px 9px;}
+  .editor-toolbar .toolbar-sep{margin:0 2px;}
 
-  /* 字号控制栏 */
   .font-size-bar{padding:8px 14px;}
 
-  /* 内容区域 */
   .read-content,.editor-content{padding:18px 16px;font-size:15px;}
   .chapter-title-bar{padding:16px;}
   .chapter-title-bar h2{font-size:18px;padding-bottom:12px;}
 
-  /* 章节导航 */
   .chapter-nav{padding:14px 16px;}
   .chapter-nav-btn{padding:8px 12px;font-size:12px;gap:6px;}
   .chapter-nav-title{max-width:90px;}
 
-  /* 梗概 / 标签编辑区 */
   .synopsis-editor{padding:16px;}
   .tag-editor{padding:16px;}
 
-  /* 面包屑 */
   .breadcrumb{padding:9px 16px;font-size:12px;}
 
-  /* 卡片操作按钮在移动端直接显示（hover 不可用）*/
   .card-btns{opacity:1;}
+  .chapter-actions{opacity:1;}
+
+  .bottom-exit-bar{padding:16px;}
 }
 
 .icon-sm{width:14px;height:14px;}
@@ -285,56 +282,50 @@ const Icons = {
   plus:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>`,
   x:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>`,
   back:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="10,3 4,8 10,13"/></svg>`,
-  eye:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>`,
-  edit:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M112l3 3-9 9H2v-3l9-9z"/></svg>`,
+  eye:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>`,
+  edit:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3l9-9z"/></svg>`,
   tag:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8.5L8.5 2H14v5.5L7.5 14a1 1 0 01-1.4 0L2 9.9a1 1 0 010-1.4z"/><circle cx="11.5" cy="4.5" r="1" fill="currentColor" stroke="none"/></svg>`,
   book:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><line x1="5" y1="6" x2="9" y2="6"/><line x1="5" y1="9" x2="8" y2="9"/></svg>`,
   file:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V6l-4-4z"/><polyline points="9,2 9,6 13,6"/></svg>`,
   search:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4"/><line x1="10.5" y1="10.5" x2="14" y2="14"/></svg>`,
-  trash:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 14,4"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1m1 0l-1 10H5L4 4"/></svg>`,
+  trash:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 14,4"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1m1 0l-1 10H5L44"/></svg>`,
   chevronRight:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6,4 10,8 6,12"/></svg>`,
   chevronLeft:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="10,4 6,8 10,12"/></svg>`,
   download:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8m0 0l-3-3m3 3l3-3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>`,
   upload:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V2m0 0L5 5m3-3l3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>`,
   check:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,8 7,12 13,4"/></svg>`,
   sparkle:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4 4l22M10 10l2 2M12 4l-2 2M6 10l-2 2"/></svg>`,
-  pencil:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3l8-8z"/></svg>`,
+  pencil:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M112l3 3-8 8H3v-3l8-8z"/></svg>`,
   synopsis:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>`,
+  logout:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3"/><path d="M10 11l3-3-3-3"/><line x1="6" y1="8" x2="13" y2="8"/></svg>`,
 };
 
 function icon(name,cls='icon-md'){const svg=Icons[name];if(!svg)return '';return svg.replace('<svg ',`<svg class="${cls}" `);}
-
 const STORAGE_KEY='story_editor_data';
 function loadData(){const raw=localStorage.getItem(STORAGE_KEY);if(raw)try{return JSON.parse(raw);}catch{}return{stories:[]};}
 function saveData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
 let appData=loadData();
-
-// 阅读字号（14~24px，持久化）
 const FS_KEY='story_read_font_size';
 let readFontSize=parseInt(localStorage.getItem(FS_KEY)||'16',10);
 function setFontSize(delta){
-  readFontSize=Math.min(24,Math.max(14,readFontSize+delta));
+  readFontSize=Math.min(28,Math.max(12,readFontSize+delta));
   localStorage.setItem(FS_KEY,readFontSize);
-  // 实时更新，不需要整体 re-render
   const rc=document.getElementById('read-content-area');
   if(rc)rc.style.fontSize=readFontSize+'px';
   const fsv=document.getElementById('fs-value');
   if(fsv)fsv.textContent=readFontSize+'px';
 }
-
 let currentView='stories';
 let currentStoryId=null;
 let currentChapterId=null;
 let currentTag=null;
 let editorMode='read';
-
 function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
 function escHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 function getStory(id){return appData.stories.find(s=>s.id===id);}
 function getChapter(storyId,chapterId){const story=getStory(storyId);return story?story.chapters.find(c=>c.id===chapterId):null;}
 function getAllTags(){const tagSet=new Set();appData.stories.forEach(s=>{s.chapters.forEach(c=>{(c.tags||[]).forEach(t=>tagSet.add(t));});});return[...tagSet].sort();}
 function getChaptersByTag(tag){const results=[];appData.stories.forEach(s=>{s.chapters.forEach(c=>{if((c.tags||[]).includes(tag))results.push({story:s,chapter:c});});});return results;}
-
 function getChapterIndex(storyId,chapterId){
   const story=getStory(storyId);if(!story)return -1;
   return story.chapters.findIndex(c=>c.id===chapterId);
@@ -349,13 +340,11 @@ function getNextChapter(storyId,chapterId){
   const idx=story.chapters.findIndex(c=>c.id===chapterId);
   return idx>=0&&idx<story.chapters.length-1?story.chapters[idx+1]:null;
 }
-
 function showToast(message,iconName='check'){
   const toastArea=document.getElementById('toast-area');
   toastArea.innerHTML=`<div class="toast">${icon(iconName,'icon-sm')}${message}</div>`;
   setTimeout(()=>{toastArea.innerHTML='';},2500);
 }
-
 function exportData(){
   const dataStr=JSON.stringify(appData,null,2);
   const blob=new Blob([dataStr],{type:'application/json;charset=utf-8'});
@@ -365,9 +354,7 @@ function exportData(){
   const filename=`故事编辑器_备份_${timestamp}.json`;
   const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showToast('数据已导出到本地文件','download');
 }
-
 function triggerImport(){const input=document.getElementById('import-file-input');input.value='';input.click();}
-
 document.getElementById('import-file-input').addEventListener('change',function(e){
   const file=e.target.files[0];if(!file)return;
   if(!file.name.endsWith('.json')){alert('请选择 .json 格式的备份文件');return;}
@@ -386,28 +373,23 @@ document.getElementById('import-file-input').addEventListener('change',function(
   };
   reader.readAsText(file);
 });
-
 const app=document.getElementById('app');
 const breadcrumbArea=document.getElementById('breadcrumb-area');
 const modalArea=document.getElementById('modal-area');
-
 function render(){
   switch(currentView){
     case'stories':renderStories();break;
     case'chapters':renderChapters();break;
     case'editor':renderEditor();break;
     case'tags':renderTags();break;
-    case'tag-results':renderTagResults();break;
-  }
+    case'tag-results':renderTagResults();break;}
   renderBreadcrumb();updateNavTabs();
 }
-
 function updateNavTabs(){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   const idx=(currentView==='tags'||currentView==='tag-results')?1:0;
   document.querySelectorAll('.nav-tab')[idx].classList.add('active');
 }
-
 function renderBreadcrumb(){
   if(currentView==='stories'||currentView==='tags'){breadcrumbArea.innerHTML='';return;}
   let parts=[];
@@ -431,19 +413,15 @@ function renderBreadcrumb(){
   }
   breadcrumbArea.innerHTML=`<div class="breadcrumb">${parts.join('')}</div>`;
 }
-
 function renderStories(){
   const stories=appData.stories;
   let html=`
     <div class="page-header">
-      <h2>我的故事<span class="count">${stories.length}篇</span></h2>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <h2>我的故事<span class="count">${stories.length}篇</span></h2><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <button class="btn btn-outline" onclick="triggerImport()">${icon('upload','icon-sm')} 导入</button>
-        <button class="btn btn-outline" onclick="exportData()">${icon('download','icon-sm')} 导出</button>
-        <button class="btn btn-primary" onclick="showAddStoryModal()">${icon('plus','icon-sm')} 新建故事</button>
+        <button class="btn btn-outline" onclick="exportData()">${icon('download','icon-sm')} 导出</button><button class="btn btn-primary" onclick="showAddStoryModal()">${icon('plus','icon-sm')} 新建故事</button>
       </div>
     </div>`;
-
   if(stories.length===0){
     html+=`<div class="empty-state"><div class="empty-icon">${icon('book','icon-xl')}</div><p>还没有故事<br>点击右上角按钮开始创作</p></div>`;
   }else{
@@ -455,7 +433,10 @@ function renderStories(){
       const totalWords=s.chapters.reduce((sum,c)=>sum+(c.content||'').length,0);
       html+=`
         <div class="card" onclick="goToChapters('${s.id}')">
-          <button class="card-delete" title="删除故事" onclick="event.stopPropagation();deleteStory('${s.id}')">${icon('x','icon-sm')}</button>
+          <div class="card-btns">
+            <button class="card-btn" title="重命名" onclick="event.stopPropagation();showRenameStoryModal('${s.id}')">${icon('pencil','icon-sm')}</button>
+            <button class="card-btn danger" title="删除" onclick="event.stopPropagation();deleteStory('${s.id}')">${icon('trash','icon-sm')}</button>
+          </div>
           <div class="card-title">${escHtml(s.title)}</div>
           <div class="card-meta">${chCount} 个章节 · ${totalWords.toLocaleString()} 字</div>
           ${tagsHtml?`<div class="card-tags">${tagsHtml}</div>`:''}
@@ -465,20 +446,21 @@ function renderStories(){
   }
   app.innerHTML=html;
 }
-
 function renderChapters(){
   const story=getStory(currentStoryId);
   if(!story){switchMainTab('stories');return;}
   const chapters=story.chapters;
   let html=`
     <div class="page-header">
-      <h2>${escHtml(story.title)}<span class="count">${chapters.length} 章</span></h2>
+      <div class="story-title-row">
+        <h2>${escHtml(story.title)}<span class="count">${chapters.length} 章</span></h2>
+        <button class="rename-btn" title="修改故事名称" onclick="showRenameStoryModal('${story.id}')">${icon('pencil','icon-sm')}</button>
+      </div>
       <div style="display:flex;gap:8px;">
         <button class="btn btn-outline" onclick="switchMainTab('stories')">${icon('back','icon-sm')} 返回</button>
         <button class="btn btn-primary" onclick="showAddChapterModal()">${icon('plus','icon-sm')} 新建章节</button>
       </div>
     </div>`;
-
   if(chapters.length===0){
     html+=`<div class="empty-state"><div class="empty-icon">${icon('file','icon-xl')}</div><p>还没有章节<br>添加第一章开始写作</p></div>`;
   }else{
@@ -487,15 +469,12 @@ function renderChapters(){
       const synopsis=c.synopsis||'';
       const preview=(c.content||'').substring(0,60);
       const tagsHtml=(c.tags||[]).map(t=>`<span class="tag">${escHtml(t)}</span>`).join('');
-
-      // 优先显示梗概，无梗概时显示正文前几句
       let descHtml='';
       if(synopsis.trim()){
         descHtml=`<div class="chapter-synopsis">${escHtml(synopsis)}</div>`;
       }else{
         descHtml=`<div class="chapter-preview">${preview?escHtml(preview)+'…':'暂无内容'}</div>`;
       }
-
       html+=`
         <div class="chapter-item" onclick="goToEditor('${c.id}')">
           <div class="chapter-info">
@@ -516,51 +495,52 @@ function renderChapters(){
   }
   app.innerHTML=html;
 }
-
 function renderEditor(){
   const chapter=getChapter(currentStoryId,currentChapterId);
   if(!chapter){goToChapters(currentStoryId);return;}
-
   const story=getStory(currentStoryId);
   const chapterIdx=getChapterIndex(currentStoryId,currentChapterId);
   const prevCh=getPrevChapter(currentStoryId,currentChapterId);
   const nextCh=getNextChapter(currentStoryId,currentChapterId);
-
   const modeBtn=(mode,label,iconName)=>`
-    <button class="btn btn-sm ${editorMode===mode?'btn-primary':'btn-ghost'}" onclick="setEditorMode('${mode}')">${icon(iconName,'icon-sm')} ${label}</button>`;
-
+    <button class="btn btn-sm ${editorMode===mode?'btn-primary':'btn-ghost'}" onclick="setEditorMode('${mode}')">${icon(iconName,'icon-sm')}<span class="tb-label">${label}</span></button>`;
   const toolbarHtml=`
     <div class="editor-toolbar">
       ${modeBtn('read','阅读','eye')}
       ${modeBtn('edit','编辑','edit')}
       ${modeBtn('synopsis','梗概','synopsis')}
       ${modeBtn('tags','标签','tag')}
-      <div style="flex:1"></div>
       <span class="toolbar-sep"></span>
-      <button class="btn btn-sm btn-ghost" onclick="goToChapters('${currentStoryId}')">${icon('x','icon-sm')} 退出</button>
+      <button class="btn btn-sm btn-ghost" onclick="goToChapters('${currentStoryId}')">${icon('logout','icon-sm')}<span class="tb-label">退出</span></button>
     </div>`;
-
   let bodyHtml='';
-
   if(editorMode==='edit'){
     bodyHtml=`
       <textarea class="editor-content" id="editor-textarea" placeholder="在此输入正文内容…" oninput="autoSaveContent(this.value)">${escHtml(chapter.content||'')}</textarea>
       <div class="word-count" id="word-count">字数：${(chapter.content||'').length}</div>`;
   }else if(editorMode==='read'){
+    // Font size bar
+    bodyHtml=`
+      <div class="font-size-bar">
+        <span>字号</span>
+        <button onclick="setFontSize(-1)">A−</button>
+        <span class="fs-value" id="fs-value">${readFontSize}px</span>
+        <button onclick="setFontSize(1)">A+</button>
+      </div>`;
     const content=chapter.content||'';
     if(content.trim()){
-      bodyHtml=`<div class="read-content">${escHtml(content).replace(/\n/g,'<br>')}</div>`;
+      bodyHtml+=`<div class="read-content" id="read-content-area" style="font-size:${readFontSize}px">${escHtml(content).replace(/\n/g,'<br>')}</div>`;
     }else{
-      bodyHtml=`<div class="empty-state" style="min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="empty-icon">${icon('file','icon-xl')}</div><p>暂无内容，切换到「编辑」模式开始写作</p></div>`;
-    }// 上一章/下一章导航
+      bodyHtml+=`<div class="empty-state" style="min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="empty-icon">${icon('file','icon-xl')}</div><p>暂无内容，切换到「编辑」模式开始写作</p></div>`;
+    }
+    // Prev / Next chapter nav
     const prevBtnClass=prevCh?'':'disabled';
     const nextBtnClass=nextCh?'':'disabled';
     const prevTitle=prevCh?escHtml(prevCh.title):'';
     const nextTitle=nextCh?escHtml(nextCh.title):'';
-
     bodyHtml+=`
       <div class="chapter-nav">
-        <button class="chapter-nav-btn ${prevBtnClass}" ${prevCh?`onclick="navigateChapter('${prevCh.id}')"`:''}  >
+        <button class="chapter-nav-btn ${prevBtnClass}" ${prevCh?`onclick="navigateChapter('${prevCh.id}')"`:''}>
           ${icon('chevronLeft','icon-sm')}<div class="chapter-nav-info">
             <span class="chapter-nav-label">上一章</span>
             ${prevCh?`<span class="chapter-nav-title">${prevTitle}</span>`:'<span class="chapter-nav-title" style="color:var(--text-muted)">没有了</span>'}
@@ -576,6 +556,11 @@ function renderEditor(){
           ${icon('chevronRight','icon-sm')}
         </button>
       </div>`;
+    // Bottom exit button
+    bodyHtml+=`
+      <div class="bottom-exit-bar">
+        <button class="btn btn-outline" onclick="goToChapters('${currentStoryId}')">${icon('logout','icon-sm')} 退出阅读</button>
+      </div>`;
   }else if(editorMode==='synopsis'){
     const synopsis=chapter.synopsis||'';
     bodyHtml=`
@@ -583,14 +568,13 @@ function renderEditor(){
         <div class="synopsis-editor-title">章节梗概</div>
         <div class="synopsis-editor-desc">简要概述本章的主要内容、情节走向或关键事件</div>
         <textarea class="synopsis-textarea" id="synopsis-textarea" placeholder="在此输入本章梗概…" oninput="autoSaveSynopsis(this.value)">${escHtml(synopsis)}</textarea>
-        <div class="synopsis-word-count" id="synopsis-word-count">字数：${synopsis.length}·  已保存</div>
+        <div class="synopsis-word-count" id="synopsis-word-count">字数：${synopsis.length}·已保存</div>
       </div>`;
   }else if(editorMode==='tags'){
     const tags=chapter.tags||[];
     const tagsHtml=tags.map(t=>`<span class="tag tag-large">${escHtml(t)}<span class="tag-remove" onclick="removeTagFromChapter('${escHtml(t)}')">&times;</span></span>`).join('');
     const allTags=getAllTags();
     const chapterTagSet=new Set(tags);
-
     let existingTagsHtml='';
     if(allTags.length>0){
       const tagItems=allTags.map(t=>{
@@ -603,31 +587,26 @@ function renderEditor(){
           <div class="existing-tags-label">${icon('sparkle','icon-sm')}从已有标签中选取<span style="color:var(--text-muted);font-weight:400;font-size:12px;margin-left:4px;">（点击添加，划线表示已添加）</span></div><div class="tags-cloud">${tagItems}</div>
         </div>`;
     }
-
     bodyHtml=`
       <div class="tag-editor">
         <div class="tag-editor-title">管理标签</div>
         <div class="tag-input-row">
           <input type="text" id="tag-input" placeholder="输入标签名称，按回车添加" onkeydown="if(event.key==='Enter'){addTagToChapter();event.preventDefault();}">
           <button class="btn btn-primary btn-sm" onclick="addTagToChapter()">${icon('plus','icon-sm')} 添加</button>
-        </div>
-        <div class="tags-cloud" style="margin-bottom:4px;">${tagsHtml||`<span style="color:var(--text-muted);font-size:13px;">暂无标签</span>`}</div>
+        </div><div class="tags-cloud" style="margin-bottom:4px;">${tagsHtml||`<span style="color:var(--text-muted);font-size:13px;">暂无标签</span>`}</div>
         ${existingTagsHtml}
       </div>`;
   }
-
   app.innerHTML=`
     <div class="chapter-title-bar"><h2>${escHtml(chapter.title)}</h2></div>
     <div class="editor-wrapper" style="margin-top:0;border-top:none;border-radius:0 0 var(--radius) var(--radius);">
       ${toolbarHtml}
       ${bodyHtml}
     </div>`;
-
   if(editorMode==='edit'){const ta=document.getElementById('editor-textarea');if(ta)ta.focus();}
   if(editorMode==='synopsis'){const ta=document.getElementById('synopsis-textarea');if(ta)ta.focus();}
   if(editorMode==='tags'){const inp=document.getElementById('tag-input');if(inp)inp.focus();}
 }
-
 function renderTags(){
   const tags=getAllTags();
   let html=`<div class="page-header"><h2>所有标签<span class="count">${tags.length} 个</span></h2></div>`;
@@ -643,7 +622,6 @@ function renderTags(){
   }
   app.innerHTML=html;
 }
-
 function renderTagResults(){
   const results=getChaptersByTag(currentTag);
   let html=`
@@ -666,7 +644,6 @@ function renderTagResults(){
   }
   app.innerHTML=html;
 }
-
 function switchMainTab(tab){
   if(tab==='stories'){currentView='stories';currentStoryId=null;currentChapterId=null;}
   else if(tab==='tags'){currentView='tags';currentStoryId=null;currentChapterId=null;currentTag=null;}
@@ -677,33 +654,31 @@ function goToEditor(chapterId){currentView='editor';currentChapterId=chapterId;e
 function goToEditorFromTag(storyId,chapterId){currentStoryId=storyId;currentChapterId=chapterId;currentView='editor';editorMode='read';render();}
 function goToTagResults(tag){currentView='tag-results';currentTag=tag;render();}
 function setEditorMode(mode){editorMode=mode;render();}
-
 function navigateChapter(chapterId){
   currentChapterId=chapterId;
   editorMode='read';
   render();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
 function addStory(title){appData.stories.push({id:genId(),title,chapters:[],createdAt:Date.now()});saveData(appData);}
-
+function renameStory(id,newTitle){
+  const story=getStory(id);if(!story)return;
+  story.title=newTitle;saveData(appData);render();showToast('故事已重命名','check');
+}
 function deleteStory(id){
   if(!confirm('确定要删除这个故事及其所有章节吗？'))return;
   appData.stories=appData.stories.filter(s=>s.id!==id);saveData(appData);render();
 }
-
 function addChapter(title){
   const story=getStory(currentStoryId);if(!story)return;
   story.chapters.push({id:genId(),title,content:'',synopsis:'',tags:[],createdAt:Date.now()});
   saveData(appData);
 }
-
 function deleteChapter(chapterId){
   if(!confirm('确定要删除这个章节吗？'))return;
   const story=getStory(currentStoryId);if(!story)return;
   story.chapters=story.chapters.filter(c=>c.id!==chapterId);saveData(appData);render();
 }
-
 let saveTimer=null;
 function autoSaveContent(value){
   const chapter=getChapter(currentStoryId,currentChapterId);if(!chapter)return;
@@ -713,7 +688,6 @@ function autoSaveContent(value){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{saveData(appData);if(wc)wc.textContent=`字数：${value.length}  ·  已保存`;},500);
 }
-
 let synopsisSaveTimer=null;
 function autoSaveSynopsis(value){
   const chapter=getChapter(currentStoryId,currentChapterId);if(!chapter)return;
@@ -723,7 +697,6 @@ function autoSaveSynopsis(value){
   clearTimeout(synopsisSaveTimer);
   synopsisSaveTimer=setTimeout(()=>{saveData(appData);if(wc)wc.textContent=`字数：${value.length}  ·  已保存`;},500);
 }
-
 function addTagToChapter(){
   const input=document.getElementById('tag-input');if(!input)return;
   const tag=input.value.trim();if(!tag)return;
@@ -732,19 +705,16 @@ function addTagToChapter(){
   if(!chapter.tags.includes(tag)){chapter.tags.push(tag);saveData(appData);}
   input.value='';render();
 }
-
 function addExistingTagToChapter(tag){
   const chapter=getChapter(currentStoryId,currentChapterId);if(!chapter)return;
   if(!chapter.tags)chapter.tags=[];
   if(!chapter.tags.includes(tag)){chapter.tags.push(tag);saveData(appData);render();}
 }
-
 function removeTagFromChapter(tag){
   const chapter=getChapter(currentStoryId,currentChapterId);if(!chapter)return;
   chapter.tags=(chapter.tags||[]).filter(t=>t!==tag);saveData(appData);render();
 }
-
-function showModal(title,placeholder,callback){
+function showModal(title,placeholder,callback,defaultValue){
   modalArea.innerHTML=`
     <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
       <div class="modal">
@@ -758,24 +728,24 @@ function showModal(title,placeholder,callback){
     </div>`;
   const input=document.getElementById('modal-input');
   const confirmBtn=document.getElementById('modal-confirm');
-  setTimeout(()=>input.focus(),80);
+  if(defaultValue!==undefined){input.value=defaultValue;}
+  setTimeout(()=>{input.focus();input.select();},80);
   confirmBtn.onclick=()=>{
     const value=input.value.trim();
     if(value){callback(value);closeModal();}else{input.style.borderColor='var(--danger)';input.style.boxShadow='0 0 0 3px rgba(192,57,43,0.12)';input.placeholder='请输入内容';}
   };
 }
-
 function closeModal(){modalArea.innerHTML='';}
 function showAddStoryModal(){showModal('新建故事','请输入故事标题',(title)=>{addStory(title);render();});}
+function showRenameStoryModal(storyId){
+  const story=getStory(storyId);if(!story)return;
+  showModal('修改故事名称','请输入新的故事标题',(newTitle)=>{renameStory(storyId,newTitle);},story.title);
+}
 function showAddChapterModal(){
   const story=getStory(currentStoryId);const nextNum=story?story.chapters.length+1:1;
-  showModal('新建章节','请输入章节标题',(title)=>{addChapter(title);render();});
-  setTimeout(()=>{const inp=document.getElementById('modal-input');if(inp)inp.value=`第${nextNum} 章`;},50);
+  showModal('新建章节','请输入章节标题',(title)=>{addChapter(title);render();},`第${nextNum}章`);
 }
-
 render();
-
-// ── PWA：Service Worker 注册 ──────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
@@ -792,8 +762,6 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.warn('SW 注册失败:', err));
   });
 }
-
-// ── PWA：安装横幅（A2HS） ────────────────────────────────────────────────────
 let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -802,7 +770,6 @@ window.addEventListener('beforeinstallprompt', e => {
     setTimeout(showInstallBanner, 3000);
   }
 });
-
 function showInstallBanner() {
   if (document.getElementById('install-banner') || !deferredInstallPrompt) return;
   const banner = document.createElement('div');
@@ -815,8 +782,7 @@ function showInstallBanner() {
     'box-shadow:var(--shadow-lg);z-index:250;',
     'font-family:"DM Sans",sans-serif;font-size:13px;',
     'color:var(--text);white-space:nowrap;',
-    'animation:slideUp 0.3s cubic-bezier(.34,1.56,.64,1);',
-  ].join('');
+    'animation:slideUp 0.3s cubic-bezier(.34,1.56,.64,1);',].join('');
   banner.innerHTML = `
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M8 10V2m0 0L5 5m3-3l3 3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>
     <span>安装到桌面，随时离线使用</span>
@@ -832,8 +798,7 @@ function installPWA() {
     if (choice.outcome === 'accepted') {
       localStorage.setItem('pwa_install_dismissed', '1');
       showToast('已添加到桌面', 'check');
-    }
-    deferredInstallPrompt = null;
+    }deferredInstallPrompt = null;
     dismissInstallBanner();
   });
 }
