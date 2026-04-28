@@ -90,7 +90,7 @@ function fontFileStrategy(request) {
       return fetch(request).then(response => {
         if (response.ok) cache.put(request, response.clone());
         return response;
-      }).catch(() => cached); // 完全离线时也返回 undefined，字体降级即可
+      }).catch(() => new Response('', { status: 503, statusText: 'Offline' }));
     })
   );
 }
@@ -102,7 +102,7 @@ function staleWhileRevalidate(request, cacheName) {
       const networkFetch = fetch(request).then(response => {
         if (response.ok) cache.put(request, response.clone());
         return response;
-      }).catch(() => null);
+      }).catch(() => cached || new Response('', { status: 503, statusText: 'Offline' }));
 
       return cached || networkFetch;
     })
