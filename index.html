@@ -198,7 +198,8 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 .font-size-bar button:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-soft);}
 .font-size-bar .fs-value{min-width:32px;text-align:center;font-weight:500;color:var(--text);}
 
-.bottom-exit-bar{display:flex;justify-content:center;align-items:center;padding:20px 36px;border-top:1px solid var(--border);background:var(--surface);}
+.selected-item{box-shadow:inset 3px 0 0 var(--accent),var(--shadow-sm)!important;}
+.card.selected-item::after{opacity:1;}
 
 .read-nav-bar{display:flex;align-items:center;padding:8px 12px;padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 8px);background:var(--surface);border-top:1px solid var(--border);gap:6px;}
 .read-nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow-sm);line-height:1;flex:1;}
@@ -340,6 +341,15 @@ let currentChapterId=null;
 let currentTag=null;
 let editorMode='read';
 let editorReturnView='chapters';
+let scrollPos={};
+let lastSelected={};
+function saveNav(key,selectedId){scrollPos[key]=window.scrollY;lastSelected[key]=selectedId;}
+function restoreNav(key){
+  const sel=lastSelected[key];
+  if(sel){const el=document.querySelector(`[data-nav-id="${sel}"]`);if(el){el.classList.add('selected-item');el.scrollIntoView({block:'nearest'});}}
+  const pos=scrollPos[key];
+  if(pos!=null)window.scrollTo({top:pos,behavior:'instant'});
+}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
 function escHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 function getStory(id){return appData.stories.find(s=>s.id===id);}
@@ -452,7 +462,7 @@ function renderStories(){
       const tagsHtml=[...allTags].slice(0,4).map(t=>`<span class="tag">${escHtml(t)}</span>`).join('');
       const totalWords=s.chapters.reduce((sum,c)=>sum+(c.content||'').length,0);
       html+=`
-        <div class="card" style="padding:16px 22px;" onclick="goToChapters('${s.id}')">
+        <div class="card" data-nav-id="${s.id}" style="padding:16px 22px;" onclick="goToChapters('${s.id}')">
           <div class="card-btns">
             <button class="card-btn" title="重命名" onclick="event.stopPropagation();showRenameStoryModal('${s.id}')">${icon('pencil','icon-sm')}</button>
             <button class="card-btn danger" title="删除" onclick="event.stopPropagation();deleteStory('${s.id}')">${icon('trash','icon-sm')}</button>
@@ -464,6 +474,7 @@ function renderStories(){
     html+=`</div>`;
   }
   app.innerHTML=html;
+  restoreNav('stories');
 }
 function renderChapters(){
   const story=getStory(currentStoryId);
@@ -496,7 +507,7 @@ function renderChapters(){
         descHtml=`<div class="chapter-preview">${preview?escHtml(preview)+'…':'暂无内容'}</div>`;
       }
       html+=`
-        <div class="chapter-item" onclick="goToEditor('${c.id}')" style="position:relative;">
+        <div class="chapter-item" data-nav-id="${c.id}" onclick="goToEditor('${c.id}')" style="position:relative;">
           <div class="chapter-info">
             <div class="chapter-num">${i+1}</div>
             <div style="min-width:0;flex:1;">
@@ -517,6 +528,7 @@ function renderChapters(){
     html+=`</div>`;
   }
   app.innerHTML=html;
+  restoreNav('chapters:'+currentStoryId);
 }
 function renderEditor(){
   const chapter=getChapter(currentStoryId,currentChapterId);
@@ -634,7 +646,7 @@ function renderTagResults(){
       const otherTags=(r.chapter.tags||[]).filter(t=>t!==currentTag);
       const otherTagsHtml=otherTags.map(t=>`<span class="tag">${escHtml(t)}</span>`).join('');
       html+=`
-        <div class="result-item" onclick="goToEditorFromTag('${r.story.id}','${r.chapter.id}')">
+        <div class="result-item" data-nav-id="${r.chapter.id}" onclick="goToEditorFromTag('${r.story.id}','${r.chapter.id}')">
           <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
             <span style="font-weight:600;font-size:15px;color:var(--text);">${escHtml(r.story.title)}</span>
             <span style="font-size:13px;color:var(--text-muted);">${escHtml(r.chapter.title)}</span>
@@ -645,15 +657,16 @@ function renderTagResults(){
     });
   }
   app.innerHTML=html;
+  restoreNav('tag-results:'+currentTag);
 }
 function switchMainTab(tab){
   if(tab==='stories'){currentView='stories';currentStoryId=null;currentChapterId=null;}
   else if(tab==='tags'){currentView='tags';currentStoryId=null;currentChapterId=null;currentTag=null;}
   render();
 }
-function goToChapters(storyId){currentView='chapters';currentStoryId=storyId;currentChapterId=null;render();}
-function goToEditor(chapterId){editorReturnView='chapters';currentView='editor';currentChapterId=chapterId;editorMode='read';render();}
-function goToEditorFromTag(storyId,chapterId){editorReturnView='tag-results';currentStoryId=storyId;currentChapterId=chapterId;currentView='editor';editorMode='read';render();}
+function goToChapters(storyId){saveNav('stories',storyId);currentView='chapters';currentStoryId=storyId;currentChapterId=null;render();}
+function goToEditor(chapterId){saveNav('chapters:'+currentStoryId,chapterId);editorReturnView='chapters';currentView='editor';currentChapterId=chapterId;editorMode='read';render();}
+function goToEditorFromTag(storyId,chapterId){saveNav('tag-results:'+currentTag,chapterId);editorReturnView='tag-results';currentStoryId=storyId;currentChapterId=chapterId;currentView='editor';editorMode='read';render();}
 function goToTagResults(tag){currentView='tag-results';currentTag=tag;render();}
 function exitEditor(){if(editorReturnView==='tag-results'){currentView='tag-results';render();}else{goToChapters(currentStoryId);}}
 function setEditorMode(mode){editorMode=mode;render();}
