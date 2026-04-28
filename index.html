@@ -200,14 +200,14 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 
 .bottom-exit-bar{display:flex;justify-content:center;align-items:center;padding:20px 36px;border-top:1px solid var(--border);background:var(--surface);}
 
-.read-nav-bar{display:flex;align-items:center;padding:8px 12px;background:var(--surface);border-top:1px solid var(--border);gap:6px;}
+.read-nav-bar{display:flex;align-items:center;padding:8px 12px;padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 8px);background:var(--surface);border-top:1px solid var(--border);gap:6px;}
 .read-nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow-sm);line-height:1;flex:1;}
 .read-nav-btn:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-soft);}
 .read-nav-btn.disabled{opacity:0.35;cursor:not-allowed;pointer-events:none;box-shadow:none;}
 .read-nav-btn svg{flex-shrink:0;}
 .read-nav-sep{width:1px;height:24px;background:var(--border);flex-shrink:0;margin:0 2px;}
 
-.read-content-scroll{font-family:'Lora',serif;font-size:16px;line-height:1.95;color:var(--text);white-space:pre-wrap;word-wrap:break-word;padding:28px 36px;overflow-y:auto;height:calc(100dvh - 310px);}
+.read-content-scroll{font-family:'Lora',serif;font-size:16px;line-height:1.95;color:var(--text);white-space:pre-wrap;word-wrap:break-word;padding:28px 36px;overflow-y:auto;height:calc(100vh - 310px - env(safe-area-inset-bottom, 0px));height:calc(100dvh - 310px - env(safe-area-inset-bottom, 0px));}
 
 /*── story title row with rename button ── */
 .story-title-row{display:flex;align-items:center;gap:8px;}
@@ -257,7 +257,7 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 
   .bottom-exit-bar{padding:16px;}
 
-  .read-content-scroll{padding:16px;height:calc(100dvh - 250px);}
+  .read-content-scroll{padding:16px;height:calc(100vh - 250px - env(safe-area-inset-bottom, 0px));height:calc(100dvh - 250px - env(safe-area-inset-bottom, 0px));}
   .chapter-title-bar{padding:8px 16px;}
   .read-nav-bar{padding:6px 8px;gap:4px;}
   .read-nav-btn{padding:7px 10px;font-size:12px;}
