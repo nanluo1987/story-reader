@@ -5,7 +5,7 @@
  *   - Google Fonts 字体文件 → Cache First + 长期缓存
  */
 
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE_APP   = `story-app-${VERSION}`;
 const CACHE_FONTS = `story-fonts-${VERSION}`;
 

@@ -227,11 +227,10 @@ textarea.read-content-scroll::placeholder{color:var(--text-muted);font-style:ita
 .rating-G{background:#3b8a5a;}
 .rating-M{background:#e07b24;}
 .rating-E{background:#8e1c1c;}
-.rating-fab{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom, 0px));width:44px;height:44px;font-size:18px;border:none;border-radius:10px;cursor:pointer;box-shadow:var(--shadow-md);z-index:90;transition:transform 0.15s,box-shadow 0.15s;}
-.rating-fab:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px);}
-.rating-fab:active{transform:scale(0.95);}
+.btn.rating-btn{color:#fff;border-color:transparent;font-weight:700;justify-content:center;min-width:42px;box-shadow:var(--shadow-sm);}
+.btn.rating-btn:hover{filter:brightness(0.93);}
 .rating-menu-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:150;}
-.rating-menu{position:fixed;right:24px;bottom:calc(78px + env(safe-area-inset-bottom, 0px));z-index:151;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:6px;min-width:200px;animation:slideUp 0.2s cubic-bezier(.34,1.56,.64,1);}
+.rating-menu{position:absolute;z-index:151;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:6px;min-width:200px;animation:slideUp 0.2s cubic-bezier(.34,1.56,.64,1);}
 .rating-menu-title{font-size:11px;color:var(--text-muted);padding:6px 10px 4px;letter-spacing:0.03em;}
 .rating-option{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);text-align:left;}
 .rating-option:hover{background:rgba(28,25,23,0.05);}
@@ -240,7 +239,6 @@ textarea.read-content-scroll::placeholder{color:var(--text-muted);font-style:ita
 .rating-option-text{display:flex;flex-direction:column;line-height:1.3;}
 .rating-option-en{font-size:11px;color:var(--text-muted);}
 .card-rating{width:18px;height:18px;font-size:11px;border-radius:4px;margin-right:7px;vertical-align:1px;}
-.fab-spacer{height:72px;}
 
 /*── story title row with rename button ── */
 .story-title-row{display:flex;align-items:center;gap:8px;}
@@ -252,8 +250,7 @@ textarea.read-content-scroll::placeholder{color:var(--text-muted);font-style:ita
   .container{padding:16px 14px;}
   .card-grid{grid-template-columns:1fr;}
   input,textarea:not(.read-content-scroll),select{font-size:16px !important;}
-  .rating-fab{right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));}
-  .rating-menu{right:16px;bottom:calc(70px + env(safe-area-inset-bottom, 0px));}
+  .btn.rating-btn{min-width:34px;}
   .top-nav{padding:0 16px;}
   .top-nav .logo{font-size:15px;margin-right:14px;}
   .nav-tab{padding:6px 10px;font-size:12px;gap:5px;}
@@ -536,6 +533,7 @@ function renderChapters(){
   const story=getStory(currentStoryId);
   if(!story){switchMainTab('stories');return;}
   const chapters=story.chapters;
+  const rating=(story.rating&&RATINGS[story.rating])?story.rating:'N';
   let html=`
     <div class="page-header">
       <div class="story-title-row">
@@ -546,6 +544,7 @@ function renderChapters(){
         <button class="btn btn-outline" onclick="switchMainTab('stories')">${icon('back','icon-sm')} 返回</button>
         <button class="btn btn-outline" onclick="exportStoryTxt('${story.id}')">${icon('txt','icon-sm')} 导出txt</button>
         <button class="btn btn-primary" onclick="showAddChapterModal()">${icon('plus','icon-sm')} 新建章节</button>
+        <button class="btn rating-btn rating-${rating}" id="rating-btn" title="作品分级：${RATINGS[rating].en}" onclick="toggleRatingMenu('${story.id}')">${rating}</button>
       </div>
     </div>`;
   if(chapters.length===0){
@@ -584,10 +583,6 @@ function renderChapters(){
     });
     html+=`</div>`;
   }
-  // 右下角分级按钮（留出底部空间，避免挡住最后一章）
-  const rating=(story.rating&&RATINGS[story.rating])?story.rating:'N';
-  html+=`<div class="fab-spacer"></div>
-    <button class="rating-badge rating-fab rating-${rating}" title="作品分级：${RATINGS[rating].en}" onclick="toggleRatingMenu('${story.id}')">${rating}</button>`;
   app.innerHTML=html;
   restoreNav('chapters:'+currentStoryId);
 }
@@ -853,10 +848,16 @@ function toggleRatingMenu(storyId){
     </button>`).join('');
   modalArea.innerHTML=`
     <div class="rating-menu-overlay" onclick="closeModal()"></div>
-    <div class="rating-menu" id="rating-menu">
+    <div class="rating-menu" id="rating-menu" style="${ratingMenuPos()}">
       <div class="rating-menu-title">作品分级</div>
       ${opts}
     </div>`;
+}
+function ratingMenuPos(){
+  const b=document.getElementById('rating-btn');if(!b)return'';
+  const r=b.getBoundingClientRect();
+  const right=Math.max(12,document.documentElement.clientWidth-r.right);
+  return `top:${r.bottom+window.scrollY+6}px;right:${right}px;`;
 }
 function setStoryRating(storyId,code){
   const story=getStory(storyId);if(!story)return;
