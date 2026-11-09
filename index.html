@@ -208,7 +208,39 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 .read-nav-btn svg{flex-shrink:0;}
 .read-nav-sep{width:1px;height:24px;background:var(--border);flex-shrink:0;margin:0 2px;}
 
-.read-content-scroll{font-family:'Lora',serif;font-size:16px;line-height:1.95;color:var(--text);white-space:pre-wrap;word-wrap:break-word;padding:28px 36px;overflow-y:auto;height:calc(100vh - 310px - env(safe-area-inset-bottom, 0px));height:calc(100dvh - 310px - env(safe-area-inset-bottom, 0px));}
+.read-content-scroll{font-family:'Lora',serif;font-size:16px;line-height:1.95;color:var(--text);white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;padding:28px 36px;overflow-y:auto;height:calc(100vh - 310px - env(safe-area-inset-bottom, 0px));height:calc(100dvh - 310px - env(safe-area-inset-bottom, 0px));}
+/* 编辑模式的文本框：外观与阅读模式完全一致，只是可以输入 */
+textarea.read-content-scroll{display:block;width:100%;border:none;border-radius:0;outline:none;resize:none;background:transparent;margin:0;letter-spacing:normal;-webkit-appearance:none;appearance:none;}
+textarea.read-content-scroll::placeholder{color:var(--text-muted);font-style:italic;}
+
+/* 章节标题栏右侧的字数 */
+.chapter-title-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.chapter-title-bar h2{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.title-wc{font-size:12px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;letter-spacing:0.02em;}
+
+/* 工具栏右侧（撤回 / 复制） */
+.toolbar-spacer{flex:1;}
+
+/* ── 分级 ── */
+.rating-badge{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:'DM Sans',sans-serif;line-height:1;border-radius:6px;}
+.rating-N{background:#a8a29e;}
+.rating-G{background:#3b8a5a;}
+.rating-M{background:#e07b24;}
+.rating-E{background:#8e1c1c;}
+.rating-fab{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom, 0px));width:44px;height:44px;font-size:18px;border:none;border-radius:10px;cursor:pointer;box-shadow:var(--shadow-md);z-index:90;transition:transform 0.15s,box-shadow 0.15s;}
+.rating-fab:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px);}
+.rating-fab:active{transform:scale(0.95);}
+.rating-menu-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:150;}
+.rating-menu{position:fixed;right:24px;bottom:calc(78px + env(safe-area-inset-bottom, 0px));z-index:151;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:6px;min-width:200px;animation:slideUp 0.2s cubic-bezier(.34,1.56,.64,1);}
+.rating-menu-title{font-size:11px;color:var(--text-muted);padding:6px 10px 4px;letter-spacing:0.03em;}
+.rating-option{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);text-align:left;}
+.rating-option:hover{background:rgba(28,25,23,0.05);}
+.rating-option.current{background:var(--accent-soft);}
+.rating-option .rating-badge{width:26px;height:26px;font-size:13px;flex-shrink:0;}
+.rating-option-text{display:flex;flex-direction:column;line-height:1.3;}
+.rating-option-en{font-size:11px;color:var(--text-muted);}
+.card-rating{width:18px;height:18px;font-size:11px;border-radius:4px;margin-right:7px;vertical-align:1px;}
+.fab-spacer{height:72px;}
 
 /*── story title row with rename button ── */
 .story-title-row{display:flex;align-items:center;gap:8px;}
@@ -219,7 +251,9 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 @media(max-width:640px){
   .container{padding:16px 14px;}
   .card-grid{grid-template-columns:1fr;}
-  input,textarea,select{font-size:16px !important;}
+  input,textarea:not(.read-content-scroll),select{font-size:16px !important;}
+  .rating-fab{right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));}
+  .rating-menu{right:16px;bottom:calc(70px + env(safe-area-inset-bottom, 0px));}
   .top-nav{padding:0 16px;}
   .top-nav .logo{font-size:15px;margin-right:14px;}
   .nav-tab{padding:6px 10px;font-size:12px;gap:5px;}
@@ -242,7 +276,7 @@ body{font-family:'DM Sans',-apple-system,'PingFang SC','Microsoft YaHei',sans-se
 
   .read-content,.editor-content{padding:18px 16px;font-size:15px;}
   .chapter-title-bar{padding:16px;}
-  .chapter-title-bar h2{font-size:18px;padding-bottom:12px;}
+  .chapter-title-bar h2{font-size:18px;}
 
   .chapter-nav{padding:14px 16px;}
   .chapter-nav-btn{padding:8px 12px;font-size:12px;gap:6px;}
@@ -314,6 +348,9 @@ const Icons = {
   synopsis:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>`,
   logout:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 14 H3 a1 1 0 0 1 -1 -1 V3 a1 1 0 0 1 1 -1 h3"/><path d="M10 11 l3-3 -3-3"/><line x1="6" y1="8" x2="13" y2="8"/></svg>`,
   chevronDown:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4,5 8,10 12,5"/><line x1="3" y1="13" x2="13" y2="13"/></svg>`,
+  undo:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h6.5a3.5 3.5 0 0 1 0 7H7"/><polyline points="6.5,3.5 4,6 6.5,8.5"/></svg>`,
+  copy:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3a1 1 0 0 0 -1 -1H3a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h2"/></svg>`,
+  txt:`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2 H4a1 1 0 0 0 -1 1 v10 a1 1 0 0 0 1 1 h8 a1 1 0 0 0 1 -1 V6 L9 2z"/><polyline points="9,2 9,6 13,6"/><line x1="5.5" y1="9" x2="10.5" y2="9"/><line x1="5.5" y1="11.5" x2="9" y2="11.5"/></svg>`,
 };
 
 function icon(name,cls='icon-md'){const svg=Icons[name];if(!svg)return '';return svg.replace('<svg ',`<svg class="${cls}" `);}
@@ -375,14 +412,33 @@ function showToast(message,iconName='check'){
   toastArea.innerHTML=`<div class="toast">${icon(iconName,'icon-sm')}${message}</div>`;
   setTimeout(()=>{toastArea.innerHTML='';},2500);
 }
+/** 通用：把一段文本保存为本地文件 */
+function downloadFile(text,filename,mime){
+  const blob=new Blob([text],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
 function exportData(){
   const dataStr=JSON.stringify(appData,null,2);
-  const blob=new Blob([dataStr],{type:'application/json;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
   const now=new Date();
   const timestamp=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
-  const filename=`故事编辑器_备份_${timestamp}.json`;
-  const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showToast('数据已导出到本地文件','download');
+  downloadFile(dataStr,`故事编辑器_备份_${timestamp}.json`,'application/json;charset=utf-8');
+  showToast('数据已导出到本地文件','download');
+}
+/** 把整个故事导出为 txt：故事标题 + 各章（章节标题 + 正文） */
+function exportStoryTxt(storyId){
+  const story=getStory(storyId);if(!story)return;
+  if(!story.chapters.length){showToast('这个故事还没有章节','txt');return;}
+  const body=story.chapters.map(c=>{
+    const content=(c.content||'').replace(/\s+$/,'');
+    return `${c.title}\n\n${content}`;
+  }).join('\n\n\n');
+  // 开头的 ﻿（BOM）让 Windows 上较老的软件也能正确识别中文，不会乱码
+  const text='﻿'+story.title+'\n\n\n'+body+'\n';
+  const safeName=(story.title.replace(/[\\/:*?"<>|]/g,'_').trim()||'故事');
+  downloadFile(text,`${safeName}.txt`,'text/plain;charset=utf-8');
+  showToast('已导出 txt 文件','download');
 }
 function triggerImport(){const input=document.getElementById('import-file-input');input.value='';input.click();}
 document.getElementById('import-file-input').addEventListener('change',function(e){
@@ -468,7 +524,7 @@ function renderStories(){
             <button class="card-btn danger" title="删除" onclick="event.stopPropagation();deleteStory('${s.id}')">${icon('trash','icon-sm')}</button>
           </div>
           <div class="card-title" style="margin-bottom:5px;">${escHtml(s.title)}</div>
-          <div class="card-meta" style="margin-bottom:0;">${chCount} 个章节 · ${totalWords.toLocaleString()} 字</div>
+          <div class="card-meta" style="margin-bottom:0;">${(s.rating&&RATINGS[s.rating]&&s.rating!=='N')?`<span class="rating-badge card-rating rating-${s.rating}" title="${RATINGS[s.rating].en}">${s.rating}</span>`:''}${chCount} 个章节 · ${totalWords.toLocaleString()} 字</div>
         </div>`;
     });
     html+=`</div>`;
@@ -486,8 +542,9 @@ function renderChapters(){
         <h2>${escHtml(story.title)}<span class="count">${chapters.length} 章</span></h2>
         <button class="rename-btn" title="修改故事名称" onclick="showRenameStoryModal('${story.id}')">${icon('pencil','icon-sm')}</button>
       </div>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-outline" onclick="switchMainTab('stories')">${icon('back','icon-sm')} 返回</button>
+        <button class="btn btn-outline" onclick="exportStoryTxt('${story.id}')">${icon('txt','icon-sm')} 导出txt</button>
         <button class="btn btn-primary" onclick="showAddChapterModal()">${icon('plus','icon-sm')} 新建章节</button>
       </div>
     </div>`;
@@ -527,6 +584,10 @@ function renderChapters(){
     });
     html+=`</div>`;
   }
+  // 右下角分级按钮（留出底部空间，避免挡住最后一章）
+  const rating=(story.rating&&RATINGS[story.rating])?story.rating:'N';
+  html+=`<div class="fab-spacer"></div>
+    <button class="rating-badge rating-fab rating-${rating}" title="作品分级：${RATINGS[rating].en}" onclick="toggleRatingMenu('${story.id}')">${rating}</button>`;
   app.innerHTML=html;
   restoreNav('chapters:'+currentStoryId);
 }
@@ -547,18 +608,21 @@ function renderEditor(){
       ${modeBtn('tags','标签','tag')}
       <span class="toolbar-sep"></span>
       <button class="btn btn-sm btn-ghost" onclick="exitEditor()">${icon('logout','icon-sm')}<span class="tb-label">退出</span></button>
+      ${editorMode==='edit'?`
+      <span class="toolbar-spacer"></span>
+      <button class="btn btn-sm btn-ghost" id="undo-btn" onclick="undoEdit()" title="撤回上次操作">${icon('undo','icon-sm')}<span class="tb-label">撤回</span></button>
+      <button class="btn btn-sm btn-ghost" onclick="copyChapter()" title="复制整章内容">${icon('copy','icon-sm')}<span class="tb-label">复制</span></button>`:''}
     </div>`;
   let bodyHtml='';
-  if(editorMode==='edit'){
-    bodyHtml=`
-      <textarea class="editor-content" id="editor-textarea" placeholder="在此输入正文内容…" oninput="autoSaveContent(this.value)">${escHtml(chapter.content||'')}</textarea>
-      <div class="word-count" id="word-count">字数：${(chapter.content||'').length}</div>`;
-  }else if(editorMode==='read'){
+  if(editorMode==='read'||editorMode==='edit'){
     const content=chapter.content||'';
     const prevBtnClass=prevCh?'':'disabled';
     const nextBtnClass=nextCh?'':'disabled';
-    if(content.trim()){
-      bodyHtml+=`<div class="read-content-scroll" id="read-content-area" style="font-size:${readFontSize}px">${escHtml(content).replace(/\n/g,'<br>')}</div>`;
+    if(editorMode==='edit'){
+      // 与阅读模式使用同一套样式；正文内容在渲染后用 JS 填入（避免开头空行被浏览器吞掉）
+      bodyHtml+=`<textarea class="read-content-scroll" id="read-content-area" style="font-size:${readFontSize}px" placeholder="在此输入正文内容…" oninput="onEditorInput(event)" onkeydown="onEditorKeydown(event)"></textarea>`;
+    }else if(content.trim()){
+      bodyHtml+=`<div class="read-content-scroll" id="read-content-area" style="font-size:${readFontSize}px">${escHtml(content)}</div>`;
     }else{
       bodyHtml+=`<div class="read-content-scroll" id="read-content-area" style="font-size:${readFontSize}px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="empty-icon">${icon('file','icon-xl')}</div><p style="color:var(--text-muted);margin-top:12px;">暂无内容，切换到「编辑」模式开始写作</p></div>`;
     }
@@ -608,12 +672,17 @@ function renderEditor(){
       </div>`;
   }
   app.innerHTML=`
-    <div class="chapter-title-bar"><h2>${escHtml(chapter.title)}</h2></div>
+    <div class="chapter-title-bar"><h2>${escHtml(chapter.title)}</h2><span class="title-wc" id="word-count">${(chapter.content||'').length.toLocaleString()} 字</span></div>
     <div class="editor-wrapper" style="margin-top:0;border-top:none;border-radius:0 0 var(--radius) var(--radius);">
       ${toolbarHtml}
       ${bodyHtml}
     </div>`;
-  if(editorMode==='edit'){const ta=document.getElementById('editor-textarea');if(ta)ta.focus();}
+  if(editorMode==='read'||editorMode==='edit'){
+    const area=document.getElementById('read-content-area');
+    if(editorMode==='edit'&&area){area.value=chapter.content||'';updateUndoBtn();}
+    // 恢复到切换模式前的阅读位置
+    if(area&&lastReadScroll&&lastReadScroll.chapterId===currentChapterId)area.scrollTop=lastReadScroll.top;
+  }
   if(editorMode==='synopsis'){const ta=document.getElementById('synopsis-textarea');if(ta)ta.focus();}
   if(editorMode==='tags'){const inp=document.getElementById('tag-input');if(inp)inp.focus();}
 }
@@ -665,16 +734,139 @@ function switchMainTab(tab){
   render();
 }
 function goToChapters(storyId){saveNav('stories',storyId);currentView='chapters';currentStoryId=storyId;currentChapterId=null;render();}
-function goToEditor(chapterId){saveNav('chapters:'+currentStoryId,chapterId);editorReturnView='chapters';currentView='editor';currentChapterId=chapterId;editorMode='read';render();}
-function goToEditorFromTag(storyId,chapterId){saveNav('tag-results:'+currentTag,chapterId);editorReturnView='tag-results';currentStoryId=storyId;currentChapterId=chapterId;currentView='editor';editorMode='read';render();}
+function goToEditor(chapterId){saveNav('chapters:'+currentStoryId,chapterId);editorReturnView='chapters';currentView='editor';currentChapterId=chapterId;editorMode='read';lastReadScroll=null;resetUndo();render();}
+function goToEditorFromTag(storyId,chapterId){saveNav('tag-results:'+currentTag,chapterId);editorReturnView='tag-results';currentStoryId=storyId;currentChapterId=chapterId;currentView='editor';editorMode='read';lastReadScroll=null;resetUndo();render();}
 function goToTagResults(tag){currentView='tag-results';currentTag=tag;render();}
 function exitEditor(){if(editorReturnView==='tag-results'){currentView='tag-results';render();}else{goToChapters(currentStoryId);}}
-function setEditorMode(mode){editorMode=mode;render();}
+
+// 记录阅读/编辑区的滚动位置，切换模式时保持在原处
+let lastReadScroll=null;
+function setEditorMode(mode){
+  if(mode===editorMode)return;
+  const area=document.getElementById('read-content-area');
+  if(area)lastReadScroll={chapterId:currentChapterId,top:area.scrollTop};
+  editorMode=mode;
+  render();
+}
 function navigateChapter(chapterId){
   currentChapterId=chapterId;
-  editorMode='read';
+  if(editorMode!=='edit')editorMode='read';   // 在编辑模式下翻章，仍保持编辑模式
+  lastReadScroll=null;
+  resetUndo();
   render();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── 撤回 ─────────────────────────────────────────────────────────────
+// 连续输入（停顿不超过 1 秒）算作“一次操作”；粘贴、剪切等单独算一次
+let undoStack=[];
+let undoLastValue='';
+let undoBurstTimer=null;
+function resetUndo(){
+  const ch=getChapter(currentStoryId,currentChapterId);
+  undoStack=[];
+  undoLastValue=ch?(ch.content||''):'';
+  clearTimeout(undoBurstTimer);undoBurstTimer=null;
+}
+function updateUndoBtn(){
+  const b=document.getElementById('undo-btn');
+  if(b)b.classList.toggle('btn-disabled',undoStack.length===0);
+}
+function recordUndo(newValue,inputType){
+  const discrete=/Paste|Cut|Drop|Drag|history/i.test(inputType||'');
+  if(discrete){clearTimeout(undoBurstTimer);undoBurstTimer=null;}
+  if(undoBurstTimer===null){
+    undoStack.push(undoLastValue);
+    if(undoStack.length>200)undoStack.shift();
+    updateUndoBtn();
+  }
+  if(!discrete){
+    clearTimeout(undoBurstTimer);
+    undoBurstTimer=setTimeout(()=>{undoBurstTimer=null;},1000);
+  }
+  undoLastValue=newValue;
+}
+function onEditorInput(e){
+  const value=e.target.value;
+  recordUndo(value,e.inputType);
+  autoSaveContent(value);
+}
+function onEditorKeydown(e){
+  // 电脑端 Ctrl+Z / Cmd+Z 也走同一套撤回
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key&&e.key.toLowerCase()==='z'){e.preventDefault();undoEdit();}
+}
+function undoEdit(){
+  if(!undoStack.length){showToast('没有可撤回的操作','undo');return;}
+  const prev=undoStack.pop();
+  clearTimeout(undoBurstTimer);undoBurstTimer=null;
+  undoLastValue=prev;
+  const chapter=getChapter(currentStoryId,currentChapterId);if(!chapter)return;
+  chapter.content=prev;
+  clearTimeout(saveTimer);saveData(appData);
+  const ta=document.getElementById('read-content-area');
+  if(ta&&ta.tagName==='TEXTAREA'){const st=ta.scrollTop;ta.value=prev;ta.scrollTop=st;}
+  const wc=document.getElementById('word-count');
+  if(wc)wc.textContent=`${prev.length.toLocaleString()} 字 · 已保存`;
+  updateUndoBtn();
+  showToast('已撤回','undo');
+}
+
+// ── 复制整章 ──────────────────────────────────────────────────────────
+function copyChapter(){
+  const chapter=getChapter(currentStoryId,currentChapterId);
+  const text=(chapter&&chapter.content)||'';
+  if(!text){showToast('本章暂无内容','copy');return;}
+  const ok=()=>showToast(`已复制 ${text.length.toLocaleString()} 字`,'copy');
+  const fail=()=>showToast('复制失败，请手动全选复制','x');
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(ok).catch(()=>{fallbackCopy(text)?ok():fail();});
+  }else{
+    fallbackCopy(text)?ok():fail();
+  }
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.setAttribute('readonly','');
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+  document.body.appendChild(ta);
+  ta.select();ta.setSelectionRange(0,text.length);
+  let ok=false;try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+  return ok;
+}
+
+// ── 分级 ─────────────────────────────────────────────────────────────
+const RATINGS={
+  N:{label:'未分级',en:'Not Rated'},
+  G:{label:'普通',en:'General'},
+  M:{label:'成熟',en:'Mature'},
+  E:{label:'限制级',en:'Explicit'},
+};
+function toggleRatingMenu(storyId){
+  if(document.getElementById('rating-menu')){closeModal();return;}
+  const story=getStory(storyId);if(!story)return;
+  const cur=(story.rating&&RATINGS[story.rating])?story.rating:'N';
+  const opts=['G','M','E','N'].map(k=>`
+    <button class="rating-option ${k===cur?'current':''}" onclick="setStoryRating('${storyId}','${k}')">
+      <span class="rating-badge rating-${k}">${k}</span>
+      <span class="rating-option-text"><span>${RATINGS[k].label}</span><span class="rating-option-en">${RATINGS[k].en}</span></span>
+    </button>`).join('');
+  modalArea.innerHTML=`
+    <div class="rating-menu-overlay" onclick="closeModal()"></div>
+    <div class="rating-menu" id="rating-menu">
+      <div class="rating-menu-title">作品分级</div>
+      ${opts}
+    </div>`;
+}
+function setStoryRating(storyId,code){
+  const story=getStory(storyId);if(!story)return;
+  if(code==='N')delete story.rating;else story.rating=code;
+  saveData(appData);
+  closeModal();
+  const y=window.scrollY;
+  render();
+  window.scrollTo({top:y,behavior:'instant'});
+  showToast(`分级：${RATINGS[code].label}`,'check');
 }
 function addStory(title){appData.stories.push({id:genId(),title,chapters:[],createdAt:Date.now()});saveData(appData);}
 function renameStory(id,newTitle){
@@ -700,9 +892,9 @@ function autoSaveContent(value){
   const chapter=getChapter(currentStoryId,currentChapterId);if(!chapter)return;
   chapter.content=value;
   const wc=document.getElementById('word-count');
-  if(wc)wc.textContent=`字数：${value.length}  ·  保存中…`;
+  if(wc)wc.textContent=`${value.length.toLocaleString()} 字 · 保存中…`;
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(()=>{saveData(appData);if(wc)wc.textContent=`字数：${value.length}  ·  已保存`;},500);
+  saveTimer=setTimeout(()=>{saveData(appData);if(wc)wc.textContent=`${value.length.toLocaleString()} 字 · 已保存`;},500);
 }
 let synopsisSaveTimer=null;
 function autoSaveSynopsis(value){
